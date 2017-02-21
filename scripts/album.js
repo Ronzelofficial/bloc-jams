@@ -30,6 +30,23 @@
      ]
  };
 
+
+ var albumRonzel = {
+     title: 'With You',
+     artist: 'Ronzel',
+     label: 'AIA',
+     year: '2017',
+     albumArtUrl: 'assets/images/album_covers/20.png',
+     songs: [
+         { title: 'With You', duration: '4:20' },
+         { title: 'Big Blue Elephant', duration: '5:17' },
+         { title: 'Like This', duration: '4:25'},
+         { title: 'At Night', duration: '7:28' },
+         { title: 'She Knew It First', duration: '8:42'}
+     ]
+ };
+
+
  var createSongRow = function(songNumber, songName, songLength) {
      var template =
         '<tr class="album-view-song-item">'
@@ -42,13 +59,16 @@
      return template;
  };
 
- var setCurrentAlbum = function(album) {
      // #1
      var albumTitle = document.getElementsByClassName('album-view-title')[0];
      var albumArtist = document.getElementsByClassName('album-view-artist')[0];
      var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
      var albumImage = document.getElementsByClassName('album-cover-art')[0];
      var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
+ 
+
+ var setCurrentAlbum = function(album) {
+
  
      // #2
      albumTitle.firstChild.nodeValue = album.title;
@@ -67,4 +87,17 @@
  
  window.onload = function() {
      setCurrentAlbum(albumPicasso);
+     
+     var albums = [albumPicasso, albumMarconi, albumRonzel];
+     var index = 1;
+     albumImage.addEventListener("click", function(event) {
+         setCurrentAlbum(albums[index]);
+         index++;
+         if (index == albums.length) {
+             index = 0;
+         }
+     });
  };
+
+
+
