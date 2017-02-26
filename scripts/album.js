@@ -66,6 +66,8 @@
  };
 
 var findParentByClassName = function(element, targetClass) {
+//    document.querySelector('.parent-one')
+//    alert(this.className);
     if (element) {
         var currentParent = element.parentElement;
         while (currentParent.className != targetClass && currentParent.className !== null) {
