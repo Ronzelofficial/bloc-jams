@@ -31,7 +31,7 @@ var getSongNumberCell = function(number){
         '<tr class="album-view-song-item">'
       + '  <td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber +                           '</td>'
       + '  <td class="song-item-title">' + songName + '</td>'
-      + '  <td class="song-item-duration">' + songLength + '</td>'
+      + '     <td class="song-item-duration">' + filterTimeCode(songLength) + '</td>'
       + '</tr>'
       ;
  
@@ -54,11 +54,13 @@ var clickHandler = function() {
 		$(this).html(pauseButtonTemplate);
         setSong(songNumber);
         currentSoundFile.play();
-             updatePlayerBarSong();
+        updateSeekBarWhileSongPlays(); 
+        updatePlayerBarSong();
          } else if (currentlyPlayingSongNumber === songNumber) {
        if (currentSoundFile.isPaused()) {
                 $(this).html(pauseButtonTemplate);
                 $('.main-controls .play-pause').html(playerBarPauseButton);
+                updateSeekBarWhileSongPlays();
                 currentSoundFile.play();
             } else {
                 $(this).html(playButtonTemplate);
@@ -133,6 +135,7 @@ var updatePlayerBarSong = function() {
     $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.artist);
     
     $('.main-controls .play-pause').html(playerBarPauseButton);
+    setTotalTimeInPlayerBar(currentSongFromAlbum.duration);
 
 };
 
@@ -155,12 +158,14 @@ var currentSoundFile = null;
 var currentVolume = 80;
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
+var $playerBarPlayToggle = $('.main-controls .play-pause');
  
 $(document).ready(function() {
      setCurrentAlbum(albumPicasso);
      setupSeekBars();
      $previousButton.click(previousSong);
      $nextButton.click(nextSong);
+    $playerBarPlayToggle.click(togglePlayFromPlayerBar);
     
           
         
@@ -235,6 +240,7 @@ var previousSong = function() {
              var $seekBar = $('.seek-control .seek-bar');
  
              updateSeekPercentage($seekBar, seekBarFillRatio);
+             setCurrentTimeInPlayerBar(this.getTime());
          });
      }
  };
@@ -305,3 +311,38 @@ var previousSong = function() {
  }
  
  
+var setCurrentTimeInPlayerBar = function(currentTime) {
+     $('.current-time').text(filterTimeCode(currentTime));
+ };
+ 
+ var setTotalTimeInPlayerBar = function(totalTime) {
+     $('.currently-playing .total-time').text(filterTimeCode(totalTime));
+ };
+ 
+ var filterTimeCode = function(seconds) {
+     var minutes = Math.floor(seconds / 60);
+     seconds = Math.floor(seconds % 60);
+     seconds = seconds < 10 ? "0" + seconds : seconds;
+     return minutes + ":" + seconds;
+ };
+ // (minutes < 10 ? "0" + minutes : minutes) + "-" + (seconds  < 10 ? "0" + seconds : seconds)
+ 
+ var togglePlayFromPlayerBar = function() {
+     
+     var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
+     
+     if (currentSoundFile.isPaused()) {
+         $(currentlyPlayingCell).html(pauseButtonTemplate);
+         
+         $('.main-controls .play-pause').html(playerBarPauseButton);
+         currentSoundFile.play();
+         updateSeekBarWhileSongPlays();   
+     }
+ 
+     else { 
+         $(currentlyPlayingCell).html(playButtonTemplate);
+         $('.main-controls .play-pause').html(playerBarPlayButton);
+         currentSoundFile.pause(); 
+      } 
+  };
+
